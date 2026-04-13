@@ -478,5 +478,3 @@ def lab_confidential():
         return render_template('lab_info.html', lab=lab,
                                error="Server error. Please try again later.")
 
-port = int(os.environ.get('PORT', 5000))
-app.run(debug=False, host='0.0.0.0', port=port)

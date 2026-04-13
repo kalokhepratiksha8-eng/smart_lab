@@ -10,10 +10,11 @@ app.secret_key = 'qrlab_secret_2024'
 
 def get_db():
     return mysql.connector.connect(
-        host="localhost",
+        host="metro.proxy.rlwy.net",
         user="root",
-        password="P@K!2816#P",
-        database="smartlabmanagement"
+        password="dTYjfjHvfjYolvIUYyJLeuRUaRRgLtzM",
+        database="railway",
+        port=26782
     )
 
 def login_required(f):
@@ -477,5 +478,5 @@ def lab_confidential():
         return render_template('lab_info.html', lab=lab,
                                error="Server error. Please try again later.")
 
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+port = int(os.environ.get('PORT', 5000))
+app.run(debug=False, host='0.0.0.0', port=port)

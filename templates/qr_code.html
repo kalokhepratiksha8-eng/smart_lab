@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}QR Code – {{ lab.lab_name }} | Smart Lab{% endblock %}
+{% block page %}labs{% endblock %}
+
+{% block content %}
+<section class="glass-card p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div>
+      <h1 class="fw-bold mb-1">
+        <i class="bi bi-qr-code text-primary"></i> QR Code
+      </h1>
+      <p class="text-secondary mb-0">{{ lab.lab_name }} &bull; {{ lab.dep_name }}</p>
+    </div>
+    <a href="{{ url_for('labs') }}" class="btn btn-outline-secondary rounded-pill">
+      <i class="bi bi-arrow-left"></i> Back to Labs
+    </a>
+  </div>
+</section>
+
+<section class="row justify-content-center">
+  <div class="col-md-7 col-lg-5">
+    <div class="glass-card p-4 text-center">
+
+      <span class="badge bg-primary rounded-pill px-3 py-2 mb-2 d-inline-block">Lab ID: {{ lab.lab_id }}</span>
+      <h3 class="fw-bold mb-0">{{ lab.lab_name }}</h3>
+      <p class="text-secondary small mb-1">{{ lab.dep_name }}</p>
+      <p class="text-secondary small mb-3">
+        <i class="bi bi-geo-alt"></i> {{ lab.location }} &bull;
+        <i class="bi bi-person"></i> {{ lab.incharge }}
+      </p>
+
+      <hr class="my-3">
+
+      <!-- QR Image -->
+      <div class="d-flex justify-content-center mb-3">
+        <div style="background:#fff; padding:14px; border-radius:12px; box-shadow:0 4px 16px rgba(0,0,0,0.15); display:inline-block;">
+          <img src="{{ url_for('static', filename=qr_image) }}"
+               alt="QR Code"
+               style="width:230px; height:230px; display:block;">
+        </div>
+      </div>
+
+      <!-- Instructions -->
+      <div class="alert alert-info py-2 px-3 text-start mb-3" style="font-size:.82rem;">
+        <strong><i class="bi bi-phone me-1"></i> Scan kase karave:</strong><br>
+        1. Phone camera / QR scanner open kara<br>
+        2. QR code var point kara<br>
+        3. Basic info distil — confidential sathi ID + Password
+      </div>
+
+      <!-- URL -->
+      <div class="bg-light rounded p-2 mb-2 text-start" style="word-break:break-all; font-size:.78rem;">
+        <i class="bi bi-link-45deg text-primary"></i> <strong>URL:</strong> {{ qr_url }}
+      </div>
+
+      <!-- Warning -->
+      <div class="alert alert-warning py-2 px-3 text-start mb-3" style="font-size:.78rem;">
+        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+        <strong>Note:</strong> Phone ani laptop <strong>same WiFi</strong> var asave.
+      </div>
+
+      <!-- Download -->
+      <a href="{{ url_for('static', filename=qr_image) }}"
+         download="QR_{{ lab.lab_name }}.png"
+         class="btn btn-app w-100">
+        <i class="bi bi-download me-1"></i> Download QR Code
+      </a>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .btn-app { background-color:#0d6efd; color:#fff; font-weight:600; border-radius:8px; padding:10px; text-decoration:none; display:inline-block; }
+  .btn-app:hover { background-color:#0b5ed7; color:#fff; }
+</style>
+{% endblock %}

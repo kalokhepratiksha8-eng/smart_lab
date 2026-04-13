@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% block title %}{{ lab.lab_name if lab is defined else "Lab Detail" }} | Smart Lab{% endblock %}
+{% block page %}lab-detail{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="glass-card p-4 mb-4">
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <div>
+      <h1 class="fw-bold mb-1">
+        <i class="bi bi-building text-primary"></i>
+        {{ lab.lab_name if lab is defined else "Lab Details" }}
+      </h1>
+      <p class="text-secondary mb-0">
+        {{ lab.dep_name if lab is defined else "" }} &bull; {{ lab.lab_time_slot if lab is defined else "" }}
+      </p>
+    </div>
+    <a href="{{ url_for('generate_qr', lab_id=lab.lab_id) }}" class="btn btn-outline-primary">
+      <i class="bi bi-qr-code"></i> Generate QR
+    </a>
+  </div>
+</section>
+
+<!-- Lab Info Cards -->
+<section class="row g-3 mb-4">
+  <div class="col-md-6 col-xl-2">
+    <div class="glass-card p-3 h-100 text-center">
+      <p class="text-secondary mb-1 small">Lab No</p>
+      <h5>{{ lab.lab_no if lab is defined else "-" }}</h5>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="glass-card p-3 h-100 text-center">
+      <p class="text-secondary mb-1 small">Location</p>
+      <h5>{{ lab.location if lab is defined else "-" }}</h5>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-3">
+    <div class="glass-card p-3 h-100 text-center">
+      <p class="text-secondary mb-1 small">Incharge</p>
+      <h5>{{ lab.incharge if lab is defined else "-" }}</h5>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-2">
+    <div class="glass-card p-3 h-100 text-center">
+      <p class="text-secondary mb-1 small">Lab Assistant</p>
+      <h5>{{ lab.lab_assistant if lab is defined and lab.lab_assistant else "-" }}</h5>
+    </div>
+  </div>
+  <div class="col-md-6 col-xl-2">
+    <div class="glass-card p-3 h-100 text-center">
+      <p class="text-secondary mb-1 small">Total PCs</p>
+      <h5>{{ lab.total_pcs if lab is defined else "-" }}</h5>
+    </div>
+  </div>
+</section>
+
+<!-- Tabs: PCs / Equipment / Software -->
+<section class="glass-card p-4">
+  <ul class="nav nav-tabs mb-3" id="labTabs">
+    <li class="nav-item">
+      <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-pcs">
+        <i class="bi bi-pc-display text-success"></i> PCs
+        <span class="badge bg-secondary ms-1">{{ pcs|length if pcs else 0 }}</span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-equipment">
+        <i class="bi bi-tools text-warning"></i> Equipment
+        <span class="badge bg-secondary ms-1">{{ equipment|length if equipment else 0 }}</span>
+      </button>
+    </li>
+    <li class="nav-item">
+      <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-software">
+        <i class="bi bi-box-seam text-info"></i> Software
+        <span class="badge bg-secondary ms-1">{{ softwares|length if softwares else 0 }}</span>
+      </button>
+    </li>
+  </ul>
+
+  <div class="tab-content">
+    <!-- PCs Tab -->
+    <div class="tab-pane fade show active" id="tab-pcs">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>PC No</th>
+              <th>Processor</th>
+              <th>RAM</th>
+              <th>Storage</th>
+              <th>OS</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if pcs %}
+              {% for pc in pcs %}
+              <tr>
+                <td>{{ pc.pc_no }}</td>
+                <td>{{ pc.processor }}</td>
+                <td>{{ pc.ram }}</td>
+                <td>{{ pc.storage }}</td>
+                <td>{{ pc.operating_system }}</td>
+                <td>
+                  {% if pc.status == "Working" or pc.status == "Active" %}
+                    <span class="badge bg-success">{{ pc.status }}</span>
+                  {% elif pc.status == "Faulty" or pc.status == "Under Repair" %}
+                    <span class="badge bg-danger">{{ pc.status }}</span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark">{{ pc.status }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="6" class="text-center text-secondary">No PCs found for this lab.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Equipment Tab -->
+    <div class="tab-pane fade" id="tab-equipment">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Equipment Name</th>
+              <th>Quantity</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if equipment %}
+              {% for eq in equipment %}
+              <tr>
+                <td>{{ eq.equipment_name }}</td>
+                <td>{{ eq.quantity }}</td>
+                <td>
+                  {% if eq.status == "Working" %}
+                    <span class="badge bg-success">Working</span>
+                  {% elif eq.status == "Faulty" %}
+                    <span class="badge bg-danger">Faulty</span>
+                  {% else %}
+                    <span class="badge bg-warning text-dark">{{ eq.status }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="3" class="text-center text-secondary">No equipment found for this lab.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Software Tab -->
+    <div class="tab-pane fade" id="tab-software">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Software Name</th>
+              <th>Version</th>
+              <th>License Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if softwares %}
+              {% for sw in softwares %}
+              <tr>
+                <td>{{ sw.software_name }}</td>
+                <td>{{ sw.version }}</td>
+                <td>{{ sw.license_type }}</td>
+              </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="3" class="text-center text-secondary">No software found for this lab.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

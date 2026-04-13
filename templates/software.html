@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Software | Smart Lab{% endblock %}
+{% block page %}software{% endblock %}
+
+{% block content %}
+<section class="glass-card p-4 mb-4">
+  <h1 class="fw-bold mb-2">
+    <i class="bi bi-box-seam text-warning"></i> Software & Licensing
+  </h1>
+  <p class="text-secondary mb-0">Monitor versions, license types across all 6 labs.</p>
+</section>
+
+<section class="glass-card p-4">
+  <div class="mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="Search software...">
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>#</th>
+          <th>Software</th>
+          <th>Version</th>
+          <th>License Type</th>
+          <th>Available In Labs</th>
+        </tr>
+      </thead>
+      <tbody id="softwareTableBody">
+        {% if softwares %}
+          {% for item in softwares %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td class="fw-semibold">{{ item.software_name }}</td>
+            <td>{{ item.version if item.version else '—' }}</td>
+            <td>
+              {% if item.license_type == 'Free' %}
+                <span class="badge bg-success">Free</span>
+              {% else %}
+                <span class="badge bg-primary">{{ item.license_type if item.license_type else 'Unknown' }}</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if item.labs %}
+                {% for lab in item.labs.split(', ') %}
+                  <span class="badge bg-warning text-dark me-1">{{ lab }}</span>
+                {% endfor %}
+              {% else %}
+                <span class="text-secondary">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-secondary py-4">No software records available.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  }
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  document.getElementById('searchInput').addEventListener('keyup', function() {
+    const val = this.value.toLowerCase();
+    document.querySelectorAll('#softwareTableBody tr').forEach(row => {
+      row.style.display = row.innerText.toLowerCase().includes(val) ? '' : 'none';
+    });
+  });
+</script>
+{% endblock %}

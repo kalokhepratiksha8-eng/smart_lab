@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ lab.lab_name }} | DES PU Smart Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <style>
+    body {
+      font-family: 'Sora', sans-serif;
+      background: url('http://news-images.dhan.co/g-tech-info-training-limited-conducts-independent-directors-meeting-on-march-20-2026.jpg') no-repeat center center fixed;
+      background-size: cover;
+      min-height: 100vh;
+    }
+    .page-wrap {
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      padding: 1.75rem;
+      margin-bottom: 1rem;
+    }
+    .brand-top {
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 1px 6px rgba(0,0,0,0.5);
+      margin-bottom: 1.25rem;
+    }
+    .brand-top h5 { font-weight: 700; margin: 0; }
+    .brand-top small { opacity: .85; font-size: .78rem; }
+    .lab-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: #0a2b48;
+      text-align: center;
+      margin-bottom: .25rem;
+    }
+    .dept-badge {
+      display: inline-block;
+      background: #e8f0fe;
+      color: #1a56db;
+      border-radius: 20px;
+      padding: .2rem .8rem;
+      font-size: .76rem;
+      font-weight: 600;
+    }
+    .divider { border-top: 1.5px solid #e5e7eb; margin: 1rem 0; }
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem 1.25rem; }
+    .info-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: #6c757d; margin-bottom: .15rem; }
+    .info-val   { font-weight: 600; color: #0a2b48; font-size: .92rem; }
+    .section-title {
+      font-weight: 700;
+      color: #0a2b48;
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: .25rem;
+    }
+    .section-sub {
+      font-size: .8rem;
+      color: #6c757d;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .form-label { font-size: .82rem; font-weight: 600; color: #374151; }
+    .app-input  { border-radius: 8px; padding: 10px; }
+    .btn-app {
+      background-color: #0d6efd;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 8px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-app:hover { background-color: #0b5ed7; }
+    .alert-error {
+      background: #fef2f2;
+      border: 1.5px solid #fca5a5;
+      border-radius: 8px;
+      color: #b91c1c;
+      padding: .55rem .9rem;
+      font-size: .82rem;
+      margin-bottom: 1rem;
+    }
+    .pc-pill {
+      background: #dcfce7;
+      color: #166534;
+      border-radius: 20px;
+      padding: .15rem .7rem;
+      font-size: .8rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrap">
+
+    <!-- Brand -->
+    <div class="brand-top">
+      <h5>DES PU Smart Lab</h5>
+      <small>Management System</small>
+    </div>
+
+    <!-- ── PUBLIC INFO ── -->
+    <div class="glass-card">
+      <i class="bi bi-building d-block text-center text-primary fs-2 mb-1"></i>
+      <p class="lab-title">{{ lab.lab_name }}</p>
+      <div class="text-center mb-2">
+        <span class="dept-badge">{{ lab.dep_name }}</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="info-grid">
+        <div>
+          <p class="info-label">Lab No</p>
+          <p class="info-val">{{ lab.lab_no or '-' }}</p>
+        </div>
+        <div>
+          <p class="info-label">Location</p>
+          <p class="info-val">{{ lab.location or '-' }}</p>
+        </div>
+        <div>
+          <p class="info-label">Incharge</p>
+          <p class="info-val">{{ lab.incharge or '-' }}</p>
+        </div>
+        <div>
+          <p class="info-label">Lab Assistant</p>
+          <p class="info-val">{{ lab.lab_assistant or '-' }}</p>
+        </div>
+        <div>
+          <p class="info-label">Time Slot</p>
+          <p class="info-val">{{ lab.lab_time_slot or '-' }}</p>
+        </div>
+        <div>
+          <p class="info-label">Total PCs</p>
+          <p class="info-val"><span class="pc-pill"><i class="bi bi-pc-display"></i> {{ lab.total_pcs }}</span></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CONFIDENTIAL LOGIN ── -->
+    <div class="glass-card">
+      <p class="section-title">🔒 Confidential Access</p>
+      <p class="section-sub">Enter credentials to view PC, equipment &amp; software details.</p>
+
+      {% if error is defined and error %}
+      <div class="alert-error">
+        <i class="bi bi-exclamation-circle-fill me-1"></i> {{ error }}
+      </div>
+      {% endif %}
+
+      {% if db_error is defined and db_error %}
+      <div style="background:#fff7ed;border:1.5px solid #fdba74;border-radius:8px;color:#9a3412;padding:.5rem .9rem;font-size:.78rem;margin-bottom:.75rem;">
+        <i class="bi bi-wifi-off me-1"></i> DB connection issue – confidential login may not work right now.
+      </div>
+      {% endif %}
+
+      <form method="POST" action="/lab-confidential">
+        <input type="hidden" name="lab_id" value="{{ lab.lab_id }}">
+        <div class="mb-3">
+          <label class="form-label" for="user_id">User ID</label>
+          <input class="form-control app-input" id="user_id" name="user_id"
+                 type="text" placeholder="Enter username" required>
+        </div>
+        <div class="mb-4">
+          <label class="form-label" for="password">Password</label>
+          <input class="form-control app-input" id="password" name="password"
+                 type="password" placeholder="********" required>
+        </div>
+        <button class="btn-app" type="submit">
+          <i class="bi bi-unlock-fill me-1"></i> Unlock
+        </button>
+      </form>
+    </div>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

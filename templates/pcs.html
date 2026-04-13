@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}PCs | Smart Lab{% endblock %}
+{% block page %}pcs{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="glass-card p-4 mb-4">
+  <h1 class="fw-bold mb-2">
+    <i class="bi bi-pc-display text-success"></i> PC Inventory
+  </h1>
+  <p class="text-secondary mb-0">
+    Machine specifications, live status, and health score across all labs.
+  </p>
+</section>
+
+<!-- PCs Table -->
+<section class="glass-card p-4">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>PC Number</th>
+          <th>Lab ID</th>
+          <th>Processor</th>
+          <th>RAM</th>
+          <th>Storage</th>
+          <th>Operating System</th>
+          <th>Status</th>
+          <th>Health</th>
+        </tr>
+      </thead>
+      <tbody id="pcsTableBody">
+        {% if pcs is defined and pcs %}
+          {% for pc in pcs %}
+          <tr>
+            <td>{{ pc.pc_number }}</td>
+            <td>{{ pc.lab_id }}</td>
+            <td>{{ pc.processor }}</td>
+            <td>{{ pc.ram }} GB</td>
+            <td>{{ pc.storage }} GB</td>
+            <td>{{ pc.operating_system }}</td>
+            <td>
+              {% if pc.status == "Active" %}
+                <span class="badge bg-success">Active</span>
+              {% elif pc.status == "Faulty" %}
+                <span class="badge bg-danger">Faulty</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">{{ pc.status }}</span>
+              {% endif %}
+            </td>
+            <td>{{ pc.health_score }}%</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="8" class="text-center text-secondary">No PCs available.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  }
+</style>
+{% endblock %}

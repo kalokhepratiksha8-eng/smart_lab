@@ -1,0 +1,220 @@
+body.app-body,
+body.login-body {
+  font-family: "Sora", sans-serif;
+  background: url("http://news-images.dhan.co/g-tech-info-training-limited-conducts-independent-directors-meeting-on-march-20-2026.jpg") no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  position: relative;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(20, 30, 48, 0.52), rgba(36, 59, 85, 0.35));
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container-fluid,
+main,
+section,
+article {
+  position: relative;
+  z-index: 1;
+}
+
+.glass-card,
+.login-card,
+.metric-card,
+.panel {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+}
+
+.sidebar-card {
+  min-height: 100%;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #495057;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.menu-link i {
+  font-size: 1rem;
+}
+
+.menu-link:hover,
+.menu-link.active {
+  background: #0d6efd;
+  color: #fff;
+}
+
+.page-title,
+.login-title {
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: #0d6efd;
+  font-weight: 700;
+}
+
+.panel-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.metric-card {
+  padding: 1rem;
+  text-align: left;
+}
+
+.metric-icon {
+  font-size: 1.4rem;
+  color: #0d6efd;
+}
+
+.metric-label {
+  margin: 0.5rem 0 0.25rem;
+  color: #6c757d;
+  font-weight: 600;
+  font-size: 0.86rem;
+}
+
+.metric-value {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.app-table {
+  --bs-table-bg: transparent;
+  --bs-table-border-color: rgba(0, 0, 0, 0.08);
+}
+
+.app-table th {
+  color: #495057;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+.app-table td {
+  color: #212529;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+.status-pill {
+  border-radius: 999px;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.status-active,
+.status-resolved,
+.status-valid {
+  color: #0f5132;
+  background: #d1e7dd;
+}
+
+.status-faulty,
+.status-expired,
+.status-pending {
+  color: #842029;
+  background: #f8d7da;
+}
+
+.status-maintenance,
+.status-expiring {
+  color: #664d03;
+  background: #fff3cd;
+}
+
+.btn-app {
+  background-color: #0d6efd;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 10px;
+  border: none;
+}
+
+.btn-app:hover {
+  background-color: #0b5ed7;
+  color: #fff;
+}
+
+.btn-app-outline {
+  border-radius: 8px;
+  border: 1px solid #0d6efd;
+  color: #0d6efd;
+  font-weight: 600;
+}
+
+.btn-app-outline:hover {
+  background-color: #0d6efd;
+  color: #fff;
+}
+
+.app-input {
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.login-card {
+  max-width: 880px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.health-wrap {
+  min-width: 145px;
+}
+
+.health-bar {
+  height: 10px;
+  border-radius: 999px;
+  background: #e9ecef;
+  overflow: hidden;
+}
+
+.health-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0d6efd, #20c997);
+}
+
+.alert-item {
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.text-secondary {
+  color: #6c757d !important;
+}
+
+@media (max-width: 991.98px) {
+  .sidebar-card {
+    min-height: auto;
+  }
+}

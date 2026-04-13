@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Maintenance | Smart Lab{% endblock %}
+{% block page %}maintenance{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<section class="glass-card p-4 mb-4">
+  <h1 class="fw-bold mb-2">
+    <i class="bi bi-tools text-danger"></i> Maintenance Tracker
+  </h1>
+  <p class="text-secondary mb-0">Track issue lifecycle from reporting to resolution.</p>
+</section>
+
+<!-- Maintenance Table -->
+<section class="glass-card p-4">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Issue</th>
+          <th>PC ID</th>
+          <th>Reported Date</th>
+          <th>Resolved Date</th>
+          <th>Status</th>
+          <th>Reported By</th>
+        </tr>
+      </thead>
+      <tbody id="maintenanceTableBody">
+        {% if maintenance is defined and maintenance %}
+          {% for record in maintenance %}
+          <tr>
+            <td>{{ record.issue_description }}</td>
+            <td>{{ record.pc_id }}</td>
+            <td>{{ record.reported_date }}</td>
+            <td>{{ record.resolved_date or "-" }}</td>
+            <td>
+              {% if record.status == "Open" %}
+                <span class="badge bg-warning text-dark">Open</span>
+              {% elif record.status == "Resolved" %}
+                <span class="badge bg-success">Resolved</span>
+              {% elif record.status == "In Progress" %}
+                <span class="badge bg-info text-dark">In Progress</span>
+              {% else %}
+                <span class="badge bg-secondary">{{ record.status }}</span>
+              {% endif %}
+            </td>
+            <td>{{ record.reported_by }}</td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center text-secondary">No maintenance records available.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  }
+</style>
+{% endblock %}

@@ -8,14 +8,21 @@ from functools import wraps
 app = Flask(__name__)
 app.secret_key = 'qrlab_secret_2024'
 
+from mysql.connector import pooling
+
+db_pool = pooling.MySQLConnectionPool(
+    pool_name="smartlab_pool",
+    pool_size=5,
+    host="metro.proxy.rlwy.net",
+    user="root",
+    password="dTYjfjHvfjYolvIUYyJLeuRUaRRgLtzM",
+    database="railway",
+    port=26782,
+    connect_timeout=10
+)
+
 def get_db():
-    return mysql.connector.connect(
-        host="metro.proxy.rlwy.net",
-        user="root",
-        password="dTYjfjHvfjYolvIUYyJLeuRUaRRgLtzM",
-        database="railway",
-        port=26782
-    )
+    return db_pool.get_connection()
 
 def login_required(f):
     @wraps(f)
@@ -275,7 +282,14 @@ def generate_qr(lab_id):
         except Exception:
             local_ip = "127.0.0.1"
 
-        qr_data = f"http://{local_ip}:5000/lab-info?lab_id={lab_id}"
+        qr_data = (
+            f"Lab Name: {lab.get('lab_name', '')}\n"
+            f"Lab No: {lab.get('lab_no', '')}\n"
+            f"Department: {lab.get('dep_name', 'Computer Engineering')}\n"
+            f"Location: {lab.get('location', '')}\n"
+            f"Incharge: {lab.get('incharge', '')}\n"
+            f"Lab ID: {lab_id}"
+        )
 
         # Generate QR with better quality
         import qrcode as qr_module
@@ -477,4 +491,3 @@ def lab_confidential():
         }
         return render_template('lab_info.html', lab=lab,
                                error="Server error. Please try again later.")
-

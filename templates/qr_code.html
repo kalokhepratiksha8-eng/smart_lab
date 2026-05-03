@@ -50,13 +50,14 @@
 
       <!-- URL -->
       <div class="bg-light rounded p-2 mb-2 text-start" style="word-break:break-all; font-size:.78rem;">
-        <i class="bi bi-link-45deg text-primary"></i> <strong>URL:</strong> {{ qr_url }}
+        <i class="bi bi-link-45deg text-primary"></i> <strong>URL:</strong>
+        <a href="{{ qr_url }}" target="_blank" class="text-primary text-decoration-none">{{ qr_url }}</a>
       </div>
 
-      <!-- Warning -->
-      <div class="alert alert-warning py-2 px-3 text-start mb-3" style="font-size:.78rem;">
-        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-        <strong>Note:</strong> Phone ani laptop <strong>same WiFi</strong> var asave.
+      <!-- Info -->
+      <div class="alert alert-success py-2 px-3 text-start mb-3" style="font-size:.78rem;">
+        <i class="bi bi-check-circle-fill me-1"></i>
+        <strong>QR scan kela ki:</strong> Koni pan, kadhi pan, kuthunhi Google Lens / Camera ne scan kela ki direct tya lab chi info page open hoil. Login kela tar confidential data pan baghta yeil.
       </div>
 
       <!-- Download -->

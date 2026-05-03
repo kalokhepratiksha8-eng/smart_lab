@@ -104,17 +104,46 @@ def home():
 
         maintenance_count = 0  # can be updated if you have a maintenance table
 
+        # PC status counts across all 6 lab PC tables
+        pc_active = 0
+        pc_faulty = 0
+        pc_maintenance = 0
+        for tbl in PC_TABLE.values():
+            try:
+                # Try status column first
+                cursor.execute(f"SELECT status, COUNT(*) as cnt FROM {tbl} GROUP BY status")
+                rows = cursor.fetchall()
+                for row in rows:
+                    s = (row.get('status') or '').lower()
+                    if 'fault' in s or 'broken' in s or 'repair' in s:
+                        pc_faulty += row['cnt']
+                    elif 'maint' in s:
+                        pc_maintenance += row['cnt']
+                    else:
+                        pc_active += row['cnt']
+            except:
+                try:
+                    # No status column — count all as active
+                    cursor.execute(f"SELECT COUNT(*) as cnt FROM {tbl}")
+                    pc_active += int(cursor.fetchone()['cnt'])
+                except:
+                    pass
+
         db.close()
         return render_template('dashboard.html',
             labs_count=labs_count,
             pcs_count=pcs_count,
             software_count=software_count,
-            maintenance_count=maintenance_count
+            maintenance_count=maintenance_count,
+            pc_active=pc_active,
+            pc_faulty=pc_faulty,
+            pc_maintenance=pc_maintenance
         )
     except Exception as e:
         flash(f'Dashboard error: {e}', 'error')
         return render_template('dashboard.html',
-            labs_count=0, pcs_count=0, software_count=0, maintenance_count=0
+            labs_count=0, pcs_count=0, software_count=0, maintenance_count=0,
+            pc_active=0, pc_faulty=0, pc_maintenance=0
         )
 
 # ───────────────────────────── LABS LIST ─────────────────────────────
@@ -275,7 +304,8 @@ def generate_qr(lab_id):
         except Exception:
             local_ip = "127.0.0.1"
 
-        qr_data = f"http://{local_ip}:5000/lab-info?lab_id={lab_id}"
+        # Render deployed URL — anyone anywhere scan karu shakto, same WiFi garja nahi
+        qr_data = f"https://smart-lab-pz1b.onrender.com/lab-info?lab_id={lab_id}"
 
         # Generate QR with better quality
         import qrcode as qr_module
@@ -413,6 +443,8 @@ def lab_info():
 
 # ─────────────── CONFIDENTIAL LOGIN (POST from lab_info) ───────────────
 
+# ── Confidential Access Users — DB la touch na karta ──
+# Email (User ID) ani Password ithe add kara
 @app.route('/lab-confidential', methods=['POST'])
 def lab_confidential():
     lab_id   = request.form.get('lab_id', type=int)
@@ -420,34 +452,56 @@ def lab_confidential():
     password = request.form.get('password', '').strip()
     if not lab_id or lab_id not in LAB_TABLE:
         return "Lab not found.", 404
+
+    def get_lab_dict(lab_raw):
+        return {
+            'lab_id':        lab_id,
+            'lab_name':      lab_raw.get('lab_name', ''),
+            'lab_no':        lab_raw.get('lab_no', ''),
+            'location':      lab_raw.get('lab_location', lab_raw.get('location', '')),
+            'incharge':      lab_raw.get('lab_incharge', lab_raw.get('incharge', '')),
+            'lab_assistant': lab_raw.get('lab_assistant', ''),
+            'total_pcs':     lab_raw.get('no_pc', lab_raw.get('total_pcs', 0)),
+            'lab_time_slot': lab_raw.get('lab_time_slot', ''),
+            'dep_name':      'Computer Engineering'
+        }
+
+    def get_lab_fallback(lab_id):
+        static = STATIC_LAB_DATA.get(lab_id, {})
+        return {
+            'lab_id': lab_id, 'lab_name': static.get('lab_name', f'Lab {lab_id}'),
+            'lab_no': static.get('lab_no', ''), 'location': static.get('location', '-'),
+            'incharge': static.get('incharge', '-'), 'lab_assistant': static.get('lab_assistant', '-'),
+            'total_pcs': static.get('total_pcs', 0), 'lab_time_slot': static.get('lab_time_slot', '-'),
+            'dep_name': 'Computer Engineering'
+        }
+
+    # ── Check: email valid asave (@ ani . ) ani password = email ch @ aadhacha part ──
+    email_valid = '@' in username and '.' in username
+    email_prefix = username.split('@')[0].lower() if '@' in username else ''
+    password_valid = password.lower() == email_prefix
+
+    if not email_valid or not password_valid:
+        try:
+            db = get_db()
+            cursor = db.cursor(dictionary=True)
+            cursor.execute(f"SELECT * FROM {LAB_TABLE[lab_id]} LIMIT 1")
+            lab_raw = cursor.fetchone()
+            db.close()
+            lab = get_lab_dict(lab_raw)
+        except:
+            lab = get_lab_fallback(lab_id)
+        return render_template('lab_info.html', lab=lab,
+                               error="Valid email taka ani password tumcha email ID cha naam asave (e.g. email: pratiksha@gmail.com → password: pratiksha)")
+
+    # ── Valid email — DB madhun lab data fetch ──
     try:
         db = get_db()
         cursor = db.cursor(dictionary=True)
 
-        def get_lab_dict(lab_raw):
-            return {
-                'lab_id':        lab_id,
-                'lab_name':      lab_raw.get('lab_name', ''),
-                'lab_no':        lab_raw.get('lab_no', ''),
-                'location':      lab_raw.get('lab_location', lab_raw.get('location', '')),
-                'incharge':      lab_raw.get('lab_incharge', lab_raw.get('incharge', '')),
-                'lab_assistant': lab_raw.get('lab_assistant', ''),
-                'total_pcs':     lab_raw.get('no_pc', lab_raw.get('total_pcs', 0)),
-                'lab_time_slot': lab_raw.get('lab_time_slot', ''),
-                'dep_name':      'Computer Engineering'
-            }
-
-        cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
-        user = cursor.fetchone()
-
         cursor.execute(f"SELECT * FROM {LAB_TABLE[lab_id]} LIMIT 1")
         lab_raw = cursor.fetchone()
         lab = get_lab_dict(lab_raw)
-
-        if not user:
-            db.close()
-            return render_template('lab_info.html', lab=lab,
-                                   error="Invalid User ID or Password. Access Denied.")
 
         cursor.execute(f"SELECT * FROM {PC_TABLE[lab_id]} ORDER BY pc_no")
         pcs = cursor.fetchall()
@@ -459,22 +513,19 @@ def lab_confidential():
 
         return render_template('lab_confidential.html',
             lab=lab, pcs=pcs, equipment=equipment, softwares=softwares,
-            logged_user=user['username'], role=user.get('role', 'Admin')
+            logged_user=username, role='Admin'
         )
     except Exception as e:
-        # DB failed - show friendly error on lab_info page with static data
         static = STATIC_LAB_DATA.get(lab_id, {})
         lab = {
-            'lab_id':        lab_id,
-            'lab_name':      static.get('lab_name', f'Lab {lab_id}'),
-            'lab_no':        static.get('lab_no', f'L-{lab_id}'),
-            'location':      static.get('location', '-'),
-            'incharge':      static.get('incharge', '-'),
-            'lab_assistant': static.get('lab_assistant', '-'),
-            'total_pcs':     static.get('total_pcs', 0),
-            'lab_time_slot': static.get('lab_time_slot', '-'),
-            'dep_name':      'Computer Engineering'
+            'lab_id': lab_id, 'lab_name': static.get('lab_name', f'Lab {lab_id}'),
+            'lab_no': static.get('lab_no', ''), 'location': static.get('location', '-'),
+            'incharge': static.get('incharge', '-'), 'lab_assistant': static.get('lab_assistant', '-'),
+            'total_pcs': static.get('total_pcs', 0), 'lab_time_slot': static.get('lab_time_slot', '-'),
+            'dep_name': 'Computer Engineering'
         }
         return render_template('lab_info.html', lab=lab,
                                error="Server error. Please try again later.")
 
+if __name__ == "__main__":
+    app.run(debug=True, host="0.0.0.0", port=5000)

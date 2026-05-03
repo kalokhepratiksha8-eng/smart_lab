@@ -175,14 +175,12 @@
                     <td>{{ pc.processor }}</td>
                     <td>{{ pc.ram }}</td>
                     <td>{{ pc.storage }}</td>
-                    <td>{{ pc.operating_system }}</td>
+                    <td>{{ pc.os }}</td>
                     <td>
-                      {% if pc.status in ["Working", "Active"] %}
-                        <span class="badge-ok">{{ pc.status }}</span>
-                      {% elif pc.status in ["Faulty", "Under Repair"] %}
-                        <span class="badge-fault">{{ pc.status }}</span>
+                      {% if pc.webcam %}
+                        <span class="badge-ok">✓ Webcam</span>
                       {% else %}
-                        <span class="badge-warn">{{ pc.status }}</span>
+                        <span class="badge-warn">No Webcam</span>
                       {% endif %}
                     </td>
                   </tr>

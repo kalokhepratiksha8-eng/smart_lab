@@ -26,7 +26,6 @@
           <th>Storage</th>
           <th>Operating System</th>
           <th>Status</th>
-          <th>Health</th>
         </tr>
       </thead>
       <tbody id="pcsTableBody">
@@ -39,14 +38,7 @@
             <td>{{ pc.ram }}</td>
             <td>{{ pc.storage }}</td>
             <td>{{ pc.os }}</td>
-            <td>
-              {% if pc.webcam %}
-                <span class="badge bg-success">✓ Webcam</span>
-              {% else %}
-                <span class="badge bg-warning text-dark">No Webcam</span>
-              {% endif %}
-            </td>
-            <td>Active</td>
+            <td><span class="badge bg-success">Active</span></td>
           </tr>
           {% endfor %}
         {% else %}

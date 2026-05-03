@@ -101,16 +101,8 @@
                 <td>{{ pc.processor }}</td>
                 <td>{{ pc.ram }}</td>
                 <td>{{ pc.storage }}</td>
-                <td>{{ pc.operating_system }}</td>
-                <td>
-                  {% if pc.status == "Working" or pc.status == "Active" %}
-                    <span class="badge bg-success">{{ pc.status }}</span>
-                  {% elif pc.status == "Faulty" or pc.status == "Under Repair" %}
-                    <span class="badge bg-danger">{{ pc.status }}</span>
-                  {% else %}
-                    <span class="badge bg-warning text-dark">{{ pc.status }}</span>
-                  {% endif %}
-                </td>
+                <td>{{ pc.os }}</td>
+                <td><span class="badge bg-success">Active</span></td>
               </tr>
               {% endfor %}
             {% else %}

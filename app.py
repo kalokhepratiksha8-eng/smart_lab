@@ -477,23 +477,44 @@ def lab_confidential():
         }
 
     # ── Check: email valid asave (@ ani . ) ani password = email ch @ aadhacha part ──
-    email_valid = '@' in username and '.' in username
-    email_prefix = username.split('@')[0].lower() if '@' in username else ''
-    password_valid = password.lower() == email_prefix
+    # ── Regex: email valid + password strength check ──
+    import re
 
-    if not email_valid or not password_valid:
+    def is_valid_email(email):
+        pattern = r'^[\w\.-]+@[\w\.-]+\.\w{2,}$'
+        return bool(re.match(pattern, email))
+
+    def get_password_strength(p):
+        if len(p) < 6:
+            return "Weak"
+        elif re.search(r'[0-9]', p) and re.search(r'[@#$%^&*!]', p):
+            return "Strong"
+        else:
+            return "Medium"
+
+    def get_lab_for_error():
         try:
             db = get_db()
             cursor = db.cursor(dictionary=True)
             cursor.execute(f"SELECT * FROM {LAB_TABLE[lab_id]} LIMIT 1")
             lab_raw = cursor.fetchone()
             db.close()
-            lab = get_lab_dict(lab_raw)
+            return get_lab_dict(lab_raw)
         except:
-            lab = get_lab_fallback(lab_id)
-        return render_template('lab_info.html', lab=lab,
-                               error="Invalid credentials. Please enter a valid email (e.g. name@gmail.com) and use the part before @ as your password (e.g. password: name)")
+            return get_lab_fallback(lab_id)
 
+    if not is_valid_email(username):
+        return render_template('lab_info.html', lab=get_lab_for_error(),
+                               error="Valid email address taka (e.g. name@gmail.com)")
+
+    if not password:
+        return render_template('lab_info.html', lab=get_lab_for_error(),
+                               error="Password rikt thevoo naka.")
+
+    strength = get_password_strength(password)
+    if strength != "Strong":
+        return render_template('lab_info.html', lab=get_lab_for_error(),
+                               error="Please write a strong password. (must include a number and a special character like @, #, $, !)")
     # ── Valid email — DB madhun lab data fetch ──
     try:
         db = get_db()

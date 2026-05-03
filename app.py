@@ -492,7 +492,7 @@ def lab_confidential():
         except:
             lab = get_lab_fallback(lab_id)
         return render_template('lab_info.html', lab=lab,
-                               error="Valid email taka ani password tumcha email ID cha naam asave (e.g. email: pratiksha@gmail.com → password: pratiksha)")
+                               error="Invalid credentials. Please enter a valid email (e.g. name@gmail.com) and use the part before @ as your password (e.g. password: name)")
 
     # ── Valid email — DB madhun lab data fetch ──
     try:

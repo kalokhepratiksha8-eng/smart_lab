@@ -33,22 +33,20 @@
         {% if pcs is defined and pcs %}
           {% for pc in pcs %}
           <tr>
-            <td>{{ pc.pc_number }}</td>
+            <td>{{ pc.pc_no }}</td>
             <td>{{ pc.lab_id }}</td>
             <td>{{ pc.processor }}</td>
-            <td>{{ pc.ram }} GB</td>
-            <td>{{ pc.storage }} GB</td>
-            <td>{{ pc.operating_system }}</td>
+            <td>{{ pc.ram }}</td>
+            <td>{{ pc.storage }}</td>
+            <td>{{ pc.os }}</td>
             <td>
-              {% if pc.status == "Active" %}
-                <span class="badge bg-success">Active</span>
-              {% elif pc.status == "Faulty" %}
-                <span class="badge bg-danger">Faulty</span>
+              {% if pc.webcam %}
+                <span class="badge bg-success">✓ Webcam</span>
               {% else %}
-                <span class="badge bg-warning text-dark">{{ pc.status }}</span>
+                <span class="badge bg-warning text-dark">No Webcam</span>
               {% endif %}
             </td>
-            <td>{{ pc.health_score }}%</td>
+            <td>Active</td>
           </tr>
           {% endfor %}
         {% else %}

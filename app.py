@@ -10,11 +10,11 @@ app.secret_key = 'qrlab_secret_2024'
 
 def get_db():
     return mysql.connector.connect(
-        host="metro.proxy.rlwy.net",
-        user="root",
-        password="dTYjfjHvfjYolvIUYyJLeuRUaRRgLtzM",
-        database="railway",
-        port=26782
+        host="brwvcod6w5wihegpcl5u-mysql.services.clever-cloud.com",
+        user="up7j4qriyyjqvsfe",
+        password="इथे_तुझा_actual_Clever_Cloud_password",
+        database="brwvcod6w5wihegpcl5u",
+        port=3306
     )
 
 def login_required(f):

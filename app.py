@@ -12,7 +12,7 @@ def get_db():
     return mysql.connector.connect(
         host="brwvcod6w5wihegpcl5u-mysql.services.clever-cloud.com",
         user="up7j4qriyyjqvsfe",
-        password="P@K!2816#P",
+        password="gjkQCWk577CCY7GMpE0G",
         database="brwvcod6w5wihegpcl5u",
         port=3306
     )
